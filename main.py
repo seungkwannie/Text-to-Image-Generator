@@ -3,14 +3,17 @@ import streamlit as st
 API_KEY = "sk-NQc71APpFfjKF5zXP1EGOyjjmvwNsDmzCSPuskTTA1tjw6cx"
 
 st.title("🎨 Text to Image Generator")
-st.write("---------------------------------------------------------------------")
+st.divider()
 
 prompt = st.text_input("Enter your image description: ")
 
-st.write("Example prompts:"
-         "\n• A cute robot painting a picture"
-         "\n• A futuristic city with flying cars"
-         "\n• A cozy coffee shop on a rainy day")
+with st.expander("Example prompts:"):
+    st.markdown("""
+    * **A cute robot** painting a picture
+    * **A futuristic city** with flying cars
+    * **A cozy coffee shop** on a rainy day
+    """)
+
 
 def generate_image():
     pass
