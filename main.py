@@ -40,15 +40,23 @@ def generate_image():
 
     try:
         response = requests.post(
-            "https://api.openai.com/v1/images/generations",
+            "https://api.stability.ai/v1/generate/stable-diffusion-xl-1024-v1-0",
             headers={"Authorization": f"Bearer {API_KEY}"},
-            json={"model": "dall-e-3", "prompt": prompt, "n": 1, "size": "512x512"}
+            files={"none": (None, "")},
+            data={"text_prompts[0][text]": prompt, "steps": 30, "cfg_scale": 7.0}
         )
         response.raise_for_status()
-        image_url = response.json()["data"][0]["url"]
+
+        import base64
+        from io import BytesIO
+
+        # Stability AI returns images in base64 format
+        image_data = response.json()["artifacts"][0]["base64"]
+        image_bytes = base64.b64decode(image_data)
+        image = BytesIO(image_bytes)
 
         st.write("Image generated successfully!")
-        st.image(image_url, caption="Generated Image")
+        st.image(image, caption="Generated Image")
 
     except Exception as e:
         st.error(f"Error generating image: {e}")
