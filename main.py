@@ -5,15 +5,34 @@ API_KEY = "sk-NQc71APpFfjKF5zXP1EGOyjjmvwNsDmzCSPuskTTA1tjw6cx"
 st.title("🎨 Text to Image Generator")
 st.divider()
 
-prompt = st.text_input("Enter your image description: ")
+prompt = st.text_area("Enter your image description:")
 
-st.write("Example prompts:")
-st.write("""
-    * **A cute robot** painting a picture
-    * **A futuristic city** with flying cars
-    * **A cozy coffee shop** on a rainy day
+st.write("**Example prompts:**")
+st.markdown("""
+• A cute robot painting a picture
+
+• A futuristic city with flying cars
+
+• A cozy coffee shop on a rainy day
 """)
 
+st.markdown("""
+<style>
+    div.stButton > button {
+        background-color: #ff5a5f;
+        color: white;
+        border-radius: 8px;
+        border: none;
+        padding: 10px 24px;
+    }
+    div.stButton > button:hover {
+        background-color: #ff7e82;
+        color: white;
+    }
+</style>
+""", unsafe_content_html=True)
+
+st.button("Generate Image")
 
 def generate_image():
     pass
