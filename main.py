@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 import base64
-from io import BytesIO
 
 API_KEY = "sk-NQc71APpFfjKF5zXP1EGOyjjmvwNsDmzCSPuskTTA1tjw6cx"
 
@@ -41,38 +40,36 @@ def generate_image():
         st.warning("Please enter a description to generate an image.")
         return
 
-    # You must specify WHICH model you want to use in the URL itself
-    engine_id = "stable-diffusion-xl-1024-v1-0"
-    url = f"https://api.stability.ai/v1/engines/{engine_id}/text-to-image"
+    # UPDATED: Use the modern Stable Image Ultra or Core endpoint
+    # 'ultra' is the highest quality; you can also use 'core'
+    url = "https://api.stability.ai/v2beta/stable-image/generate/ultra"
 
     try:
         response = requests.post(
             url,
             headers={
                 "Authorization": f"Bearer {API_KEY}",
-                "Accept": "application/json",  # Tells the server you want JSON back
+                "Accept": "application/json"
             },
-            # Use 'json=' instead of 'data=' for easier formatting with Stability
-            json={
-                "text_prompts": [{"text": prompt}],
-                "cfg_scale": 7,
-                "steps": 30,
+            files={"none": (None, "")},  # Required for multipart/form-data
+            data={
+                "prompt": prompt,
+                "output_format": "webp"  # You can use 'png' or 'jpeg' too
             }
         )
 
         response.raise_for_status()
 
-        # Stability AI returns a list of artifacts
-        response_data = response.json()
-        image_data = response_data["artifacts"][0]["base64"]
+
+        # The new V2 API returns 'image' instead of 'artifacts'
+        image_data = response.json()["image"]
         image_bytes = base64.b64decode(image_data)
 
         st.success("Image generated successfully!")
         st.image(image_bytes, caption="Generated Image")
 
     except Exception as e:
-        # This will now show the actual error message from the server if it fails
-        st.error(f"Error generating image: {e}")
+        st.error(f"Error: {e}")
 
 def download_image():
     pass
