@@ -32,8 +32,6 @@ st.markdown("""
 </style>
 """, unsafe_content_html=True)
 
-st.button("Generate Image")
-
 def generate_image():
     pass
 
