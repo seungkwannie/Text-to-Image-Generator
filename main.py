@@ -41,7 +41,7 @@ def generate_image():
 
     try:
         response = requests.post(
-            "https://api.stability.ai/v1/generate/stable-diffusion-xl-1024-v1-0",
+            "https://api.stability.ai/v1/engines/stable-diffusion-xl-1024-v1-0/generate",
             headers={"Authorization": f"Bearer {API_KEY}"},
             files={"none": (None, "")},
             data={"text_prompts[0][text]": prompt, "steps": 30, "cfg_scale": 7.0}
