@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+import base64
+from io import BytesIO
 
 API_KEY = "sk-NQc71APpFfjKF5zXP1EGOyjjmvwNsDmzCSPuskTTA1tjw6cx"
 
@@ -59,9 +61,6 @@ def generate_image():
         )
 
         response.raise_for_status()
-
-        import base64
-        from io import BytesIO
 
         # Stability AI returns a list of artifacts
         response_data = response.json()
