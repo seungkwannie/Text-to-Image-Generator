@@ -56,7 +56,7 @@ def generate_image():
         image_bytes = base64.b64decode(image_data)
         image = BytesIO(image_bytes)
 
-        st.write("Image generated successfully!")
+        st.success("Image generated successfully!")
         st.image(image, caption="Generated Image")
 
     except Exception as e:
