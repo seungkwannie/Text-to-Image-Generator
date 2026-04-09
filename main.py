@@ -7,12 +7,12 @@ st.divider()
 
 prompt = st.text_input("Enter your image description: ")
 
-with st.expander("Example prompts:"):
-    st.markdown("""
+st.write("Example prompts:")
+st.markdown("""
     * **A cute robot** painting a picture
     * **A futuristic city** with flying cars
     * **A cozy coffee shop** on a rainy day
-    """)
+""")
 
 
 def generate_image():
