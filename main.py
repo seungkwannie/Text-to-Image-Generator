@@ -8,7 +8,7 @@ st.divider()
 prompt = st.text_input("Enter your image description: ")
 
 st.write("Example prompts:")
-st.markdown("""
+st.write("""
     * **A cute robot** painting a picture
     * **A futuristic city** with flying cars
     * **A cozy coffee shop** on a rainy day
