@@ -30,7 +30,7 @@ st.markdown("""
         color: white;
     }
 </style>
-""", unsafe_content_html=True)
+""", unsafe_allow_html=True)
 
 def generate_image():
     pass
