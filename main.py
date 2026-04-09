@@ -33,6 +33,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
 def generate_image():
     if not prompt:
         st.warning("Please enter a description to generate an image.")
