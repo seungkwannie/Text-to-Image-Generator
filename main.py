@@ -38,95 +38,91 @@ st.markdown("""
 def download_image():
     pass
 
-# def generate_image():
-#     if not prompt:
-#         st.warning("Please enter a description to generate an image.")
-#         return
-#
-#     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
-#
-#     try:
-#         payload = {
-#             "text_prompts": [
-#                 {
-#                     "text": prompt,
-#                     "weight": 1
-#                 }
-#             ],
-#             "cfg_scale": 7,
-#             "height": 1024,
-#             "width": 1024,
-#             "samples": 1,
-#             "steps": 30,
-#         }
-#
-#         headers = {
-#             "Accept": "application/json",
-#             "Content-Type": "application/json",
-#             "Authorization": f"Bearer {API_KEY}",
-#         }
-#
-#         time.sleep(2)
-#
-#         response = requests.post(url, json=payload, headers=headers)
-#
-#         response.raise_for_status()
-#
-#         image_data = response.json()["artifacts"][0]["base64"]
-#         image_bytes = base64.b64decode(image_data)
-#
-#         st.success("Image generated successfully!")
-#         st.image(image_bytes, caption="Generated Image")
-#
-#         st.button("Download Image", on_click=download_image)
-#
-#     except Exception as e:
-#         st.error(f"Error: {e}")
-
-
-
-# 1. Define the function
-
 def generate_image():
-    if st.button("Generate Image"):
-        if not prompt:
-            st.warning("Please enter a description.")
-        else:
-            with st.spinner("Generating..."):
-                try:
-                    image_b64 = generate_image()
-                    if image_b64:
-                        image_bytes = base64.b64decode(image_b64)
-                        st.image(image_bytes, caption="Generated Image")
-
-                        st.session_state['last_image'] = image_bytes
-                except Exception as e:
-                    st.error(f"Error: {e}")
+    if not prompt:
+        st.warning("Please enter a description to generate an image.")
+        return
 
     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
 
-    payload = {
-        "text_prompts": [{"text": prompt, "weight": 1}],
-        "cfg_scale": 7,
-        "height": 1024,
-        "width": 1024,
-        "samples": 1,
-        "steps": 30,
-    }
+    try:
+        payload = {
+            "text_prompts": [
+                {
+                    "text": prompt,
+                    "weight": 1
+                }
+            ],
+            "cfg_scale": 7,
+            "height": 1024,
+            "width": 1024,
+            "samples": 1,
+            "steps": 30,
+        }
 
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}",
-    }
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {API_KEY}",
+        }
 
-    response = requests.post(url, json=payload, headers=headers)
+        time.sleep(2)
 
-    if response.status_code == 429:
-        st.error("Rate limit exceeded. Please wait 60 seconds.")
-        return None
+        response = requests.post(url, json=payload, headers=headers)
 
-    response.raise_for_status()
-    return response.json()["artifacts"][0]["base64"]
+        response.raise_for_status()
+
+        image_data = response.json()["artifacts"][0]["base64"]
+        image_bytes = base64.b64decode(image_data)
+
+        st.success("Image generated successfully!")
+        st.image(image_bytes, caption="Generated Image")
+
+        st.button("Download Image", on_click=download_image)
+
+    except Exception as e:
+        st.error(f"Error: {e}")
+
+# def generate_image():
+#     if st.button("Generate Image"):
+#         if not prompt:
+#             st.warning("Please enter a description.")
+#         else:
+#             with st.spinner("Generating..."):
+#                 try:
+#                     image_b64 = generate_image()
+#                     if image_b64:
+#                         image_bytes = base64.b64decode(image_b64)
+#                         st.image(image_bytes, caption="Generated Image")
+#
+#                         st.session_state['last_image'] = image_bytes
+#                 except Exception as e:
+#                     st.error(f"Error: {e}")
+#
+#     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
+#
+#     payload = {
+#         "text_prompts": [{"text": prompt, "weight": 1}],
+#         "cfg_scale": 7,
+#         "height": 1024,
+#         "width": 1024,
+#         "samples": 1,
+#         "steps": 30,
+#     }
+#
+#     headers = {
+#         "Accept": "application/json",
+#         "Content-Type": "application/json",
+#         "Authorization": f"Bearer {API_KEY}",
+#     }
+#
+#     response = requests.post(url, json=payload, headers=headers)
+#
+#     if response.status_code == 429:
+#         st.error("Rate limit exceeded. Please wait 60 seconds.")
+#         return None
+#
+#     response.raise_for_status()
+#     return response.json()["artifacts"][0]["base64"]
 
 st.button("Generate Image", on_click=generate_image)
