@@ -43,18 +43,27 @@ def generate_image():
     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
 
     try:
-        response = requests.post(
-            url,
-            headers={
-                "Authorization": f"Bearer {API_KEY}",
-                "Accept": "application/json"
-            },
-            files={"none": (None, "")},
-            data={
-                "prompt": prompt,
-                "output_format": "webp"
-            }
-        )
+        payload = {
+            "text_prompts": [
+                {
+                    "text": prompt,
+                    "weight": 1
+                }
+            ],
+            "cfg_scale": 7,
+            "height": 1024,
+            "width": 1024,
+            "samples": 1,
+            "steps": 30,
+        }
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {API_KEY}",
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
 
         response.raise_for_status()
 
