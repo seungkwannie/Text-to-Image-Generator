@@ -40,52 +40,48 @@ def generate_image():
         st.warning("Please enter a description to generate an image.")
         return
 
+    # 1. The V2 Ultra URL is correct
     url = "https://api.stability.ai/v2beta/stable-image/generate/ultra"
 
     try:
+        # 2. Simplified V2 Payload
+        # Note: 'height' and 'width' are not used here.
+        # You use 'aspect_ratio' instead (e.g., "1:1", "16:9").
         payload = {
-        "text_prompts": [
-        {
-        "text": prompt,
-        "weight": 1
-        }
-        ],
-        "cfg_scale": 7,
-        "height": 64,
-        "width": 64,
-        "samples": 1,
-        "steps": 30,
+            "prompt": (None, prompt),
+            "output_format": (None, "png"),
+            "aspect_ratio": (None, "1:1")
         }
 
+        # 3. Correct V2 Headers
+        # REMOVE "Content-Type". The 'requests' library adds the correct one automatically.
         headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}",
+            "Accept": "image/*",  # This tells the API to send back the actual image file
+            "Authorization": f"Bearer {API_KEY}",
         }
 
-        files_payload = {key: (None, str(value)) for key, value in payload.items()}
+        # 4. Use 'files' instead of 'data' or 'json'
+        response = requests.post(url, headers=headers, files=payload)
 
-        response = requests.post(
-            url,
-            headers=headers,
-            files=files_payload  # Switch from 'data=' to 'files='
+        # This will give you a descriptive error if something is still wrong
+        if response.status_code != 200:
+            st.error(f"API Error {response.status_code}: {response.text}")
+            return
+
+        # 5. Handle Response
+        # Since we used "Accept: image/*", the image is in response.content
+        image_bytes = response.content
+
+        st.success("Image generated successfully!")
+        st.image(image_bytes, caption="Generated Image")
+
+        # Download button (Standard Streamlit way)
+        st.download_button(
+            label="Download Image",
+            data=image_bytes,
+            file_name="generated_ultra.png",
+            mime="image/png"
         )
-
-        response.raise_for_status()
-
-        image_data = response.json()["artifacts"][0]["base64"]
-        image_bytes = base64.b64decode(image_data)
-
-        st.success("Image generated successfully!")
-        st.image(image_bytes, caption="Generated Image")
-
-        st.button("Download Image", on_click=download_image)
-
-        image_data = response.json()["image"]
-        image_bytes = base64.b64decode(image_data)
-
-        st.success("Image generated successfully!")
-        st.image(image_bytes, caption="Generated Image")
 
     except Exception as e:
         st.error(f"Error: {e}")
