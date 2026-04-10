@@ -40,8 +40,6 @@ def generate_image():
         st.warning("Please enter a description to generate an image.")
         return
 
-    # UPDATED: Use the modern Stable Image Ultra or Core endpoint
-    # 'ultra' is the highest quality; you can also use 'core'
     url = "https://api.stability.ai/v2beta/stable-image/generate/ultra"
 
     try:
@@ -51,17 +49,16 @@ def generate_image():
                 "Authorization": f"Bearer {API_KEY}",
                 "Accept": "application/json"
             },
-            files={"none": (None, "")},  # Required for multipart/form-data
+            files={"none": (None, "")},
             data={
                 "prompt": prompt,
-                "output_format": "webp"  # You can use 'png' or 'jpeg' too
+                "output_format": "webp"
             }
         )
 
         response.raise_for_status()
 
 
-        # The new V2 API returns 'image' instead of 'artifacts'
         image_data = response.json()["image"]
         image_bytes = base64.b64decode(image_data)
 
