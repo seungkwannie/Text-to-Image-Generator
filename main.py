@@ -40,7 +40,6 @@ def generate_image():
         st.warning("Please enter a description to generate an image.")
         return
 
-    # 1. The V2 Ultra URL is correct
     url = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
 
     try:
