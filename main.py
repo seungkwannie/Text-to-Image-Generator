@@ -40,7 +40,7 @@ def generate_image():
         st.warning("Please enter a description to generate an image.")
         return
 
-    url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
+    url = "https://api.stability.ai/v2beta/stable-image/generate/ultra"
 
     try:
         payload = {
