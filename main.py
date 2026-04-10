@@ -38,54 +38,103 @@ st.markdown("""
 def download_image():
     pass
 
+
 def generate_image():
     if not prompt:
-        st.warning("Please enter a description to generate an image.")
+        st.warning("Please enter a description.")
         return
 
     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {API_KEY}",
+    }
+    payload = {
+        "text_prompts": [{"text": prompt, "weight": 1}],
+        "cfg_scale": 7,
+        "height": 1024,
+        "width": 1024,
+        "samples": 1,
+        "steps": 30,
+    }
 
-    try:
-        payload = {
-            "text_prompts": [
-                {
-                    "text": prompt,
-                    "weight": 1
-                }
-            ],
-            "cfg_scale": 7,
-            "height": 1024,
-            "width": 1024,
-            "samples": 1,
-            "steps": 30,
-        }
+    max_retries = 3
+    retry_delay = 5  # Default wait time in seconds
 
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}",
-        }
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, json=payload, headers=headers)
 
-        response = requests.post(url, json=payload, headers=headers)
+            # If we hit the rate limit (429)
+            if response.status_code == 429:
+                # Try to get wait time from server, otherwise use default
+                wait_time = int(response.headers.get("Retry-After", retry_delay))
+                st.info(f"Rate limited. Retrying in {wait_time}s... (Attempt {attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+                continue  # Try the loop again
 
-        response.raise_for_status()
+            response.raise_for_status()  # Catch other errors (401, 404, 500)
 
-        if response.status_code == 429:
-            wait_time = int(response.headers.get("Retry-After", 5))
-            print(f"Rate limited! Retrying in {wait_time} seconds...")
-            time.sleep(wait_time)
-            return generate_image()  # Retry
+            # Success! Process the image
+            image_data = response.json()["artifacts"][0]["base64"]
+            image_bytes = base64.b64decode(image_data)
+            st.success("Image generated successfully!")
+            st.image(image_bytes, caption="Generated Image")
+            return  # Exit function on success
 
-        image_data = response.json()["artifacts"][0]["base64"]
-        image_bytes = base64.b64decode(image_data)
+        except requests.exceptions.HTTPError as e:
+            if response.status_code == 402:
+                st.error("Error: You have run out of Stability AI credits!")
+            else:
+                st.error(f"API Error: {e}")
+            break  # Stop retrying for non-429 errors
+        except Exception as e:
+            st.error(f"Unexpected Error: {e}")
+            break
 
-        st.success("Image generated successfully!")
-        st.image(image_bytes, caption="Generated Image")
-
-        st.button("Download Image", on_click=download_image)
-
-    except Exception as e:
-        st.error(f"Error: {e}")
+# def generate_image():
+#     if not prompt:
+#         st.warning("Please enter a description to generate an image.")
+#         return
+#
+#     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
+#
+#     try:
+#         payload = {
+#             "text_prompts": [
+#                 {
+#                     "text": prompt,
+#                     "weight": 1
+#                 }
+#             ],
+#             "cfg_scale": 7,
+#             "height": 1024,
+#             "width": 1024,
+#             "samples": 1,
+#             "steps": 30,
+#         }
+#
+#         headers = {
+#             "Accept": "application/json",
+#             "Content-Type": "application/json",
+#             "Authorization": f"Bearer {API_KEY}",
+#         }
+#
+#         response = requests.post(url, json=payload, headers=headers)
+#
+#         response.raise_for_status()
+#
+#         image_data = response.json()["artifacts"][0]["base64"]
+#         image_bytes = base64.b64decode(image_data)
+#
+#         st.success("Image generated successfully!")
+#         st.image(image_bytes, caption="Generated Image")
+#
+#         st.button("Download Image", on_click=download_image)
+#
+#     except Exception as e:
+#         st.error(f"Error: {e}")
 
 # def generate_image():
 #     if st.button("Generate Image"):
