@@ -40,7 +40,7 @@ def generate_image():
         st.warning("Please enter a description to generate an image.")
         return
 
-    url = "https://api.stability.ai/v2beta/stable-image/generate/ultra"
+    url = "https://api.stability.ai/v2beta/stable-image/generate/core"
 
     try:
         response = requests.post(
