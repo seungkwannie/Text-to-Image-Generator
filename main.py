@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import base64
 
-API_KEY = "sk-NQc71APpFfjKF5zXP1EGOyjjmvwNsDmzCSPuskTTA1tjw6cx"
+API_KEY = "sk-ajP64cc83hYnQlApB5QQtNmLm36jHFXTBSFazzJDw4tZxnIw"
 
 st.title("🎨 Text to Image Generator")
 st.divider()
