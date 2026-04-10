@@ -40,7 +40,7 @@ def generate_image():
         st.warning("Please enter a description to generate an image.")
         return
 
-    url = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
+    url = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
 
     try:
         payload = {
