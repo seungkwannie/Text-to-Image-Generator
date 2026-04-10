@@ -34,46 +34,61 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
+
+headers = {"Authorization": f"Bearer {st.secrets['HF_TOKEN']}"}
 
 def generate_image():
-    if not prompt:
-        st.warning("Please enter a description to generate an image.")
-        return
+    payload = {"inputs": prompt}
 
-    url = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
+    # The request logic remains the same, just the URL changes
+    response = requests.post(API_URL, headers=headers, json=payload)
 
-    try:
-        payload = {
-            "prompt": (None, prompt),
-            "output_format": (None, "png"),
-            "aspect_ratio": (None, "1:1")
-        }
+    if response.status_code == 200:
+        return response.content
+    else:
+        st.error(f"Error {response.status_code}: {response.text}")
+        return None
 
-        headers = {
-            "Accept": "image/*",
-            "Authorization": f"Bearer {API_KEY}",
-        }
-
-        response = requests.post(url, headers=headers, files=payload)
-
-        if response.status_code != 200:
-            st.error(f"API Error {response.status_code}: {response.text}")
-            return
-
-        image_bytes = response.content
-
-        st.success("Image generated successfully!")
-        st.image(image_bytes, caption="Generated Image")
-
-        st.download_button(
-            label="Download Image",
-            data=image_bytes,
-            file_name="generated_ultra.png",
-            mime="image/png"
-        )
-
-    except Exception as e:
-        st.error(f"Error: {e}")
+# def generate_image():
+#     if not prompt:
+#         st.warning("Please enter a description to generate an image.")
+#         return
+#
+#     url = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
+#
+#     try:
+#         payload = {
+#             "prompt": (None, prompt),
+#             "output_format": (None, "png"),
+#             "aspect_ratio": (None, "1:1")
+#         }
+#
+#         headers = {
+#             "Accept": "image/*",
+#             "Authorization": f"Bearer {API_KEY}",
+#         }
+#
+#         response = requests.post(url, headers=headers, files=payload)
+#
+#         if response.status_code != 200:
+#             st.error(f"API Error {response.status_code}: {response.text}")
+#             return
+#
+#         image_bytes = response.content
+#
+#         st.success("Image generated successfully!")
+#         st.image(image_bytes, caption="Generated Image")
+#
+#         st.download_button(
+#             label="Download Image",
+#             data=image_bytes,
+#             file_name="generated_ultra.png",
+#             mime="image/png"
+#         )
+#
+#     except Exception as e:
+#         st.error(f"Error: {e}")
 
 
 def download_image():
