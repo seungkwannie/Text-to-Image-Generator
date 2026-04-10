@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import base64
+import time
 
 API_KEY = "sk-NQc71APpFfjKF5zXP1EGOyjjmvwNsDmzCSPuskTTA1tjw6cx"
 
@@ -79,5 +80,8 @@ def generate_image():
 
     except Exception as e:
         st.error(f"Error: {e}")
+
+    except 429:
+        time.sleep(2)
 
 st.button("Generate Image", on_click=generate_image)
