@@ -66,11 +66,15 @@ def generate_image():
             "Authorization": f"Bearer {API_KEY}",
         }
 
-        time.sleep(2)
-
         response = requests.post(url, json=payload, headers=headers)
 
         response.raise_for_status()
+
+        if response.status_code == 429:
+            wait_time = int(response.headers.get("Retry-After", 5))
+            print(f"Rate limited! Retrying in {wait_time} seconds...")
+            time.sleep(wait_time)
+            return generate_image()  # Retry
 
         image_data = response.json()["artifacts"][0]["base64"]
         image_bytes = base64.b64decode(image_data)
