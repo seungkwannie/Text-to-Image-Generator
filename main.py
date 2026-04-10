@@ -44,6 +44,18 @@ def generate_image():
     # The request logic remains the same, just the URL changes
     response = requests.post(API_URL, headers=headers, json=payload)
 
+    image_bytes = response.content
+
+    st.success("Image generated successfully!")
+    st.image(image_bytes, caption="Generated Image")
+
+    st.download_button(
+            label="Download Image",
+            data=image_bytes,
+            file_name="generated_ultra.png",
+            mime="image/png"
+        )
+
     if response.status_code == 200:
         return response.content
     else:
