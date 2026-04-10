@@ -76,6 +76,7 @@ def generate_image():
     except Exception as e:
         st.error(f"Error: {e}")
 
+
 def download_image():
     pass
 
