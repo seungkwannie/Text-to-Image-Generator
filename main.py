@@ -51,8 +51,8 @@ def generate_image():
         }
         ],
         "cfg_scale": 7,
-        "height": 1024,
-        "width": 1024,
+        "height": 64,
+        "width": 64,
         "samples": 1,
         "steps": 30,
         }
