@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import base64
 
-API_KEY = "hf_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+API_KEY = st.secrets["HF_TOKEN"]
 
 st.title("🎨 Text to Image Generator")
 st.divider()
