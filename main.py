@@ -46,8 +46,6 @@ def generate_image():
     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
 
     try:
-        time.sleep(2)
-
         payload = {
             "text_prompts": [
                 {
@@ -67,6 +65,8 @@ def generate_image():
             "Content-Type": "application/json",
             "Authorization": f"Bearer {API_KEY}",
         }
+
+        time.sleep(2)
 
         response = requests.post(url, json=payload, headers=headers)
 
