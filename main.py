@@ -34,6 +34,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+def download_image():
+    pass
 
 def generate_image():
     if not prompt:
@@ -67,17 +69,15 @@ def generate_image():
 
         response.raise_for_status()
 
-
-        image_data = response.json()["image"]
+        image_data = response.json()["artifacts"][0]["base64"]
         image_bytes = base64.b64decode(image_data)
 
         st.success("Image generated successfully!")
         st.image(image_bytes, caption="Generated Image")
 
+        st.button("Download Image", on_click=download_image)
+
     except Exception as e:
         st.error(f"Error: {e}")
-
-def download_image():
-    pass
 
 st.button("Generate Image", on_click=generate_image)
