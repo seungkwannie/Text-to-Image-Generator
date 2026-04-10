@@ -63,7 +63,7 @@ def generate_image():
         "Authorization": f"Bearer {API_KEY}",
         }
 
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(url, data=payload)
 
         response.raise_for_status()
 
