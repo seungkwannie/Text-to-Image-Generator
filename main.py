@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import base64
 
-API_KEY = "sk-ajP64cc83hYnQlApB5QQtNmLm36jHFXTBSFazzJDw4tZxnIw"
+API_KEY = "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"
 
 st.title("🎨 Text to Image Generator")
 st.divider()
@@ -41,41 +41,31 @@ def generate_image():
         return
 
     # 1. The V2 Ultra URL is correct
-    url = "https://api.stability.ai/v2beta/stable-image/generate/ultra"
+    url = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
 
     try:
-        # 2. Simplified V2 Payload
-        # Note: 'height' and 'width' are not used here.
-        # You use 'aspect_ratio' instead (e.g., "1:1", "16:9").
         payload = {
             "prompt": (None, prompt),
             "output_format": (None, "png"),
             "aspect_ratio": (None, "1:1")
         }
 
-        # 3. Correct V2 Headers
-        # REMOVE "Content-Type". The 'requests' library adds the correct one automatically.
         headers = {
-            "Accept": "image/*",  # This tells the API to send back the actual image file
+            "Accept": "image/*",
             "Authorization": f"Bearer {API_KEY}",
         }
 
-        # 4. Use 'files' instead of 'data' or 'json'
         response = requests.post(url, headers=headers, files=payload)
 
-        # This will give you a descriptive error if something is still wrong
         if response.status_code != 200:
             st.error(f"API Error {response.status_code}: {response.text}")
             return
 
-        # 5. Handle Response
-        # Since we used "Accept: image/*", the image is in response.content
         image_bytes = response.content
 
         st.success("Image generated successfully!")
         st.image(image_bytes, caption="Generated Image")
 
-        # Download button (Standard Streamlit way)
         st.download_button(
             label="Download Image",
             data=image_bytes,
