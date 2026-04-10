@@ -46,6 +46,8 @@ def generate_image():
     url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
 
     try:
+        time.sleep(2)
+
         payload = {
             "text_prompts": [
                 {
@@ -80,8 +82,5 @@ def generate_image():
 
     except Exception as e:
         st.error(f"Error: {e}")
-
-    except 429:
-        time.sleep(2)
 
 st.button("Generate Image", on_click=generate_image)
